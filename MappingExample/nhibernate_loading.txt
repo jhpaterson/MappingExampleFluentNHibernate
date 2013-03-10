@@ -1,0 +1,301 @@
+FOrmatted with PoorSQL.com
+
+******************************************************************************************
+NOTE - lazy loading = when it is loaded, fetch = what is loaded
+******************************************************************************************
+Get employee then access address, effect of lazy loading configuration in mapping files:
+
+Code
+
+Employee emp = session.Get<Employee>(2);
+Console.WriteLine(emp.Name + ", " + emp.Address.PropertyName);
+
+Lazy loading on (default):
+
+GET EMPLOYEE
+
+NHibernate:
+
+SELECT employee0_.EmployeeID AS EmployeeID1_0_
+	,employee0_.NAME AS n ame1_0_
+	,employee0_.username AS username1_0_
+	,employee0_.phoneNumber AS phoneNum 5 _1_0_
+	,employee0_.addressID AS addressID1_0_
+	,employee0_.payGrade AS payGrade1_ 0 _
+	,employee0_.discriminator AS discrimi2_1_0_
+FROM Employees employee0_
+WHERE e mployee0_.EmployeeID = @p0;
+
+@p0 = 2 [Type: Int32 (0)]
+
+ACCESS ADDRESS
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_0_
+	,address0_.propertyName AS property2_0_0_
+	,address0_.propertyNumber AS property3_0_0_
+	,address0_.postCod e AS postCode0_0_
+FROM Addresses address0_
+WHERE address0_.AddressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)] 
+
+Felipe,LINQ Tower
+
+Lazy loading off - in Employee map .LazyLoad(Laziness.False) :
+
+GET EMPLOYEE
+
+NHibernate:
+
+SELECT employee0_.EmployeeID AS EmployeeID1_0_
+	,employee0_.NAME AS n ame1_0_
+	,employee0_.username AS username1_0_
+	,employee0_.phoneNumber AS phoneNum 5 _1_0_
+	,employee0_.addressID AS addressID1_0_
+	,employee0_.payGrade AS payGrade1_ 0 _
+	,employee0_.discriminator AS discrimi2_1_0_
+FROM Employees employee0_
+WHERE e mployee0_.EmployeeID = @p0;
+
+@p0 = 2 [Type: Int32 (0)]
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_0_
+	,address0_.propertyName AS property2_0_0_
+	,address0_.propertyNumber AS property3_0_0_
+	,address0_.postCod e AS postCode0_0_
+FROM Addresses address0_
+WHERE address0_.AddressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)]
+
+ACCESS ADDRESS
+
+Felipe,LINQ Tower
+
+Lazy loading off - in Employee map .LazyLoad(Laziness.False).Fetch.Join() :
+
+GET EMPLOYEE
+
+NHibernate:
+
+SELECT employee0_.EmployeeID AS EmployeeID1_1_
+	,employee0_.NAME AS n ame1_1_
+	,employee0_.username AS username1_1_
+	,employee0_.phoneNumber AS phoneNum 5 _1_1_
+	,employee0_.addressID AS addressID1_1_
+	,employee0_.payGrade AS payGrade1_ 1 _
+	,employee0_.discriminator AS discrimi2_1_1_
+	,address1_.AddressID AS AddressID 0 _0_
+	,address1_.propertyName AS property2_0_0_
+	,address1_.propertyNumber AS prop erty3_0_0_
+	,address1_.postCode AS postCode0_0_
+FROM Employees employee0_ left ou ter
+INNER JOIN Addresses address1_ ON employee0_.addressID = address1_.AddressID
+WHERE e mployee0_.EmployeeID = @p0;
+
+@p0 = 2 [Type: Int32 (0)]
+
+ACCESS ADDRESS
+
+Felipe,LINQ Tower
+
+
+
+
+
+Get address then access employees:
+
+Lazy loading on (default):
+
+GET ADDRESS
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_0_
+	,address0_.propertyName AS property2_0_0_
+	,address0_.propertyNumber AS property3_0_0_
+	,address0_.postCod e AS postCode0_0_
+FROM Addresses address0_
+WHERE address0_.AddressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)] 
+
+LINQ Tower
+
+ACCESS EMPLOYEES
+
+NHibernate:
+
+SELECT employees0_.addressID AS addressID1_
+	,employees0_.EmployeeID AS EmployeeID1_
+	,employees0_.EmployeeID AS EmployeeID1_0_
+	,employees0_.NAME AS n ame1_0_
+	,employees0_.username AS username1_0_
+	,employees0_.phoneNumber AS phoneN um5_1_0_
+	,employees0_.addressID AS addressID1_0_
+	,employees0_.payGrade AS payGra de1_0_
+	,employees0_.discriminator AS discrimi2_1_0_
+FROM Employees employees0_ W HERE employees0_.addressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)] 
+
+Fernando 
+Felipe
+
+Lazy loading off - - in Address map .Not.LazyLoad()
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_0_
+	,address0_.propertyName AS property2_0_0_
+	,address0_.propertyNumber AS property3_0_0_
+	,address0_.postCod e AS postCode0_0_
+FROM Addresses address0_
+WHERE address0_.AddressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)]
+
+NHibernate:
+
+SELECT employees0_.addressID AS addressID1_
+	,employees0_.EmployeeID AS EmployeeID1_
+	,employees0_.EmployeeID AS EmployeeID1_0_
+	,employees0_.NAME AS n ame1_0_
+	,employees0_.username AS username1_0_
+	,employees0_.phoneNumber AS phoneN um5_1_0_
+	,employees0_.addressID AS addressID1_0_
+	,employees0_.payGrade AS payGra de1_0_
+	,employees0_.discriminator AS discrimi2_1_0_
+FROM Employees employees0_ W HERE employees0_.addressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)] 
+
+LINQ Tower
+
+ACCESS EMPLOYEES
+
+Fernando 
+Felipe
+
+
+Lazy loading off - - in Address map .Not.LazyLoad().Fetch.Join()
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_1_
+	,address0_.propertyName AS property2_0_1_
+	,address0_.propertyNumber AS property3_0_1_
+	,address0_.postCod e AS postCode0_1_
+	,employees1_.addressID AS addressID3_
+	,employees1_.EmployeeID AS EmployeeID3_
+	,employees1_.EmployeeID AS EmployeeID1_0_
+	,employees1_.NAME AS n ame1_0_
+	,employees1_.username AS username1_0_
+	,employees1_.phoneNumber AS phoneN um5_1_0_
+	,employees1_.addressID AS addressID1_0_
+	,employees1_.payGrade AS payGra de1_0_
+	,employees1_.discriminator AS discrimi2_1_0_
+FROM Addresses address0_ lef t
+OUTER JOIN Employees employees1_ ON address0_.AddressID = employees1_.addressID
+WHERE address0_.AddressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)] 
+
+LINQ Tower
+
+ACCESS EMPLOYEES
+
+Fernando 
+Felipe
+
+
+******************************************************************************************
+LINQ query for employees then access address for each, lazy loading config default
+look at effect of Fetch in query
+
+Code:
+
+var emps5 = session.Query<Employee>()
+                    .Fetch(e => e.Address)     // show with and without fetch
+                    .ToList<Employee>();
+
+foreach (Employee em in emps5)
+{
+        Console.WriteLine(em.Name);
+        Console.WriteLine(em.Address.PropertyName);
+}
+
+
+No Fetch, using default lazy loading
+
+NHibernate:
+
+SELECT employee0_.EmployeeID AS EmployeeID1_
+	,employee0_.NAME AS nam e1_
+	,employee0_.username AS username1_
+	,employee0_.phoneNumber AS phoneNum5_1_
+	,employee0_.addressID AS addressID1_
+	,employee0_.payGrade AS payGrade1_
+	,employee 0 _.discriminator AS discrimi2_1_
+FROM Employees employee0_ 
+
+Fernando
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_0_
+	,address0_.propertyName AS property2_0_0_
+	,address0_.propertyNumber AS property3_0_0_
+	,address0_.postCod e AS postCode0_0_
+FROM Addresses address0_
+WHERE address0_.AddressID = @p0;
+
+@p0 = 2 [Type: Int32 (0)] 
+
+LINQ Tower 
+Felipe 
+LINQ Tower 
+Nico
+
+NHibernate:
+
+SELECT address0_.AddressID AS AddressID0_0_
+	,address0_.propertyName AS property2_0_0_
+	,address0_.propertyNumber AS property3_0_0_
+	,address0_.postCod e AS postCode0_0_
+FROM Addresses address0_
+WHERE address0_.AddressID = @p0;
+
+@p0 = 1 [Type: Int32 (0)] 
+
+ORM House
+
+
+
+Fetch call included in query:
+
+NHibernate:
+
+SELECT employee0_.EmployeeID AS EmployeeID1_0_
+	,address1_.AddressID AS AddressID0_1_
+	,employee0_.NAME AS name1_0_
+	,employee0_.username AS username1_ 0 _
+	,employee0_.phoneNumber AS phoneNum5_1_0_
+	,employee0_.addressID AS addressID1 _0_
+	,employee0_.payGrade AS payGrade1_0_
+	,employee0_.discriminator AS discrimi2_ 1 _0_
+	,address1_.propertyName AS property2_0_1_
+	,address1_.propertyNumber AS prop erty3_0_1_
+	,address1_.postCode AS postCode0_1_
+FROM Employees employee0_ left ou ter
+INNER JOIN Addresses address1_ ON employee0_.addressID = address1_.AddressID 
+
+Fernando 
+LINQ Tower 
+Felipe 
+LINQ Tower 
+Nico ORM House
