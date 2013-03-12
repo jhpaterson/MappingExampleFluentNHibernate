@@ -17,8 +17,6 @@ namespace MappingExample
         static void Main(string[] args)
         {
 #region CONFIGURE
-            var cfg = new Configuration();
-            cfg.Configure();
             var sessionFactory = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2008
                     .ConnectionString(c => c
